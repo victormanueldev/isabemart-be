@@ -1,0 +1,19 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: securepassword
+      POSTGRES_USER: admin
+      POSTGRES_DB: isanemart
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - app-db-data:/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    command: "postgres -c fsync=off -c full_page_writes=off -c synchronous_commit=OFF"
+
+volumes:
+  app-db-data:
