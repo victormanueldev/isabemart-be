@@ -9,10 +9,14 @@ class UserBase(BaseModel):
     is_active: Optional[bool] = True
     is_superuser: bool = False
     full_name: Optional[str] = None
+    is_technician: bool = False
+    is_customer: bool = False
+    color: Optional[str] = None
 
 
 # Properties to receive via API on creation
 class UserCreate(UserBase):
+    document_id: int
     email: EmailStr
     password: str
 
@@ -20,6 +24,7 @@ class UserCreate(UserBase):
 # Properties to receive via API on update
 class UserUpdate(UserBase):
     password: Optional[str] = None
+    color: Optional[str] = None
 
 
 class UserInDBBase(UserBase):
