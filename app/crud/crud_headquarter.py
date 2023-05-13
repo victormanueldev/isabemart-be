@@ -1,8 +1,10 @@
+from typing import List
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
 from app.models.headquarter import Headquarter
+from app.models.customer import Customer
 from app.schemas.headquarter import HeadquarterCreate, HeadquarterUpdate
 
 
@@ -17,6 +19,9 @@ class CRUDHeadquarter(CRUDBase[Headquarter, HeadquarterCreate, HeadquarterUpdate
         db.commit()
         db.refresh(db_obj)
         return db_obj
+
+    def get_with_customer(self, db: Session) -> List[Headquarter]:
+        return db.query(self.model).join(Customer).all()
 
 
 headquarter = CRUDHeadquarter(Headquarter)

@@ -1,13 +1,13 @@
-from typing import Optional, List
+from typing import Optional, Any
 from pydantic import BaseModel
 
 
 class HeadquarterBase(BaseModel):
-    name: str
-    city: str
-    neighborhood: str
-    address: str
-    phone: str
+    name: Optional[str]
+    city: Optional[str]
+    neighborhood: Optional[str]
+    address: Optional[str]
+    phone: Optional[str]
 
 
 class HeadquarterCreate(HeadquarterBase):
@@ -27,4 +27,5 @@ class HeadquarterInDBBase(HeadquarterBase):
 
 
 class Headquarter(HeadquarterInDBBase):
+    customer: Optional[Any] = None
     pass

@@ -15,7 +15,9 @@ class CRUDCustomer(CRUDBase[Customer, CustomerCreate, CustomerUpdate]):
 
     def create_with_headquarter(self, db: Session, *, obj_in: CustomerCreate) -> Customer:
         obj_customer = jsonable_encoder(obj_in)
-        obj_headquarter = obj_customer.pop('headquarter')
+        obj_headquarter = None
+        if 'headquarter' in obj_customer:
+            obj_headquarter = obj_customer.pop('headquarter')
         db_customer = self.model(**obj_customer)
         if obj_headquarter:
             db_headquarter = Headquarter(**obj_headquarter)

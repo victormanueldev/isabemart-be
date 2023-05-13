@@ -1,7 +1,7 @@
-from typing import Optional, List
+from typing import Optional
 from pydantic import BaseModel, EmailStr
 
-from .headquarter import HeadquarterCreate, Headquarter
+from .headquarter import HeadquarterCreate
 
 
 class CustomerBase(BaseModel):
@@ -20,7 +20,6 @@ class CustomerCreate(CustomerBase):
 
 
 class CustomerUpdate(CustomerBase):
-    id: int
     pass
 
 
@@ -32,5 +31,4 @@ class CustomerInDBBase(CustomerBase):
 
 
 class Customer(CustomerInDBBase):
-    headquarters: Optional[List[Headquarter]] = None
     pass

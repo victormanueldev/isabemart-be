@@ -17,4 +17,4 @@ class Headquarter(Base):
     phone = Column(String, nullable=False)
 
     customer_id = Column(Integer, ForeignKey('customer.id'))
-    customer = relationship('Customer', back_populates='headquarters', foreign_keys=[customer_id])
+    customer = relationship('Customer', back_populates='headquarters', foreign_keys=[customer_id], passive_deletes=True)
