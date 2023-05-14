@@ -2,6 +2,8 @@
 from datetime import datetime, timedelta
 from typing import Any, Union
 
+from fastapi import Depends
+from fastapi_jwt_auth import AuthJWT
 from jose import jwt
 from passlib.context import CryptContext
 
@@ -13,18 +15,17 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ALGORITHM = "HS256"
 
 
+@AuthJWT.load_config
+def get_config():
+    return settings
+
+
 def create_access_token(
-    subject: Union[str, Any], expires_delta: timedelta = None
-) -> str:
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(
-            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
-        )
-    to_encode = {"exp": expire, "sub": str(subject)}
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+    subject: Union[str, Any], expires_delta: timedelta = None, authorize: AuthJWT = None
+) -> tuple[str, str]:
+    access_token = authorize.create_access_token(subject=str(subject), algorithm=ALGORITHM, expires_time=expires_delta)
+    refresh_token = authorize.create_refresh_token(subject=str(subject), algorithm=ALGORITHM, expires_time=expires_delta)
+    return access_token, refresh_token
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:

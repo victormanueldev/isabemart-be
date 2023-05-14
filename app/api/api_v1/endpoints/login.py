@@ -2,7 +2,8 @@ from datetime import timedelta
 from typing import Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas
@@ -13,13 +14,16 @@ from app.core.config import settings
 router = APIRouter()
 
 
-@router.post("/login/access-token", response_model=schemas.Token)
-def login_access_token(
-    db: Session = Depends(deps.get_db), form_data: OAuth2PasswordRequestForm = Depends()
+@router.post("/auth/login", response_model=schemas.Token)
+def login(
+        db: Session = Depends(deps.get_db),
+        form_data: OAuth2PasswordRequestForm = Depends(),
+        authorize: AuthJWT = Depends()
 ) -> Any:
     """
     OAuth2 compatible token login, get an access token for future requests
     """
+    authorize.jwt_optional()
     user = crud.user.authenticate(
         db, email=form_data.username, password=form_data.password
     )
@@ -28,15 +32,34 @@ def login_access_token(
     elif not crud.user.is_active(user):
         raise HTTPException(status_code=400, detail="Inactive user")
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token, refresh_token = security.create_access_token(
+        user.id,
+        expires_delta=access_token_expires,
+        authorize=authorize
+    )
     return {
-        "access_token": security.create_access_token(
-            user.id, expires_delta=access_token_expires
-        ),
+        "access_token": access_token,
+        "refresh_token": refresh_token,
         "token_type": "bearer",
     }
 
 
-@router.post("/login/test-token", response_model=schemas.User)
+@router.post('/auth/refresh', response_model=schemas.Token)
+def refresh_access_token(
+        authorize: AuthJWT = Depends()
+) -> Any:
+    authorize.jwt_refresh_token_required()
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    current_user = authorize.get_jwt_subject()
+    access_token, refresh_token = security.create_access_token(
+        current_user,
+        expires_delta=access_token_expires,
+        authorize=authorize
+    )
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+
+
+@router.get("/login/test-token", response_model=schemas.User)
 def test_token(current_user: models.User = Depends(deps.get_current_user)) -> Any:
     """
     Test access token

@@ -1,9 +1,8 @@
-
 from typing import Generator
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import jwt
+from fastapi_jwt_auth import AuthJWT
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
@@ -13,7 +12,7 @@ from app.core.config import settings
 from app.db.session import SessionLocal
 
 reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_V1_STR}/login/access-token"
+    tokenUrl=f"{settings.API_V1_STR}/auth/login"
 )
 
 
@@ -26,19 +25,20 @@ def get_db() -> Generator:
 
 
 def get_current_user(
-    db: Session = Depends(get_db), token: str = Depends(reusable_oauth2)
+        db: Session = Depends(get_db),
+        authorize: AuthJWT = Depends(),
+        token: OAuth2PasswordBearer = Depends(reusable_oauth2)
 ) -> models.User:
+    authorize.jwt_required()
     try:
-        payload = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
-        )
-        token_data = schemas.TokenPayload(**payload)
-    except (jwt.JWTError, ValidationError):
+        current_user = authorize.get_jwt_subject()
+    except Exception as e:
+        print(e)
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials",
         )
-    user = crud.user.get(db, id=token_data.sub)
+    user = crud.user.get(db, id=current_user)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
