@@ -53,13 +53,13 @@ def update_customer(
     return customer
 
 
-@router.delete('/{customer_id}', response_model=schemas.Customer)
+@router.delete('/{customer_id}', response_model=bool)
 def delete_customer(
         *,
         db: Session = Depends(deps.get_db),
         customer_id: int,
         curren_user: models.User = Depends(deps.get_current_user)
-):
+) -> bool:
     customer = crud.customer.get(db, customer_id)
     if not customer:
         raise HTTPException(status_code=404, detail="Customer not found")

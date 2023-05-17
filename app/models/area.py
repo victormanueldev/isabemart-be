@@ -15,8 +15,8 @@ class Area(Base):
     estimated_time = Column(String, nullable=False)
 
     customer_id = Column(Integer, ForeignKey('customer.id'))
-    customer = relationship('Customer', foreign_keys=[customer_id], back_populates='areas')
+    customer = relationship('Customer', foreign_keys=[customer_id], back_populates='areas', passive_deletes=True)
 
     headquarter_id = Column(Integer, ForeignKey('headquarter.id'))
-    headquarter = relationship('Headquarter', foreign_keys=[headquarter_id])
+    headquarter = relationship('Headquarter', foreign_keys=[headquarter_id], passive_deletes=True)
     

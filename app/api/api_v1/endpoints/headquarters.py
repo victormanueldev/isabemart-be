@@ -18,6 +18,17 @@ def get_all(
     return headquarters
 
 
+@router.post('/', response_model=schemas.Headquarter)
+def save_headquarter(
+        *,
+        db: Session = Depends(deps.get_db),
+        headquarter_in: schemas.HeadquarterCreate,
+        current_user: models.User = Depends(deps.get_current_user)
+) -> models.Headquarter:
+    headquarter = crud.headquarter.create(db=db, obj_in=headquarter_in)
+    return headquarter
+
+
 @router.patch('/{headquarter_id}', response_model=schemas.Headquarter)
 def update_headquarter(
         *,
@@ -33,13 +44,13 @@ def update_headquarter(
     return headquarter
 
 
-@router.delete('/{headquarter_id}', response_model=schemas.Headquarter)
+@router.delete('/{headquarter_id}', response_model=bool)
 def delete_headquarter(
         *,
         db: Session = Depends(deps.get_db),
         headquarter_id: int,
         current_user: models.User = Depends(deps.get_current_user),
-) -> models.Headquarter:
+) -> bool:
     headquarter = crud.headquarter.get(db, id=headquarter_id)
     if not headquarter:
         raise HTTPException(status_code=404, detail="Headquarter not found")

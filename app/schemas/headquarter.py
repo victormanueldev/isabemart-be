@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 
 class HeadquarterBase(BaseModel):
+    customer_id: Optional[int]
     name: Optional[str]
     city: Optional[str]
     neighborhood: Optional[str]
@@ -20,7 +21,6 @@ class HeadquarterUpdate(HeadquarterBase):
 
 class HeadquarterInDBBase(HeadquarterBase):
     id: int
-    customer_id = int
 
     class Config:
         orm_mode = True
