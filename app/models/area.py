@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 
 from app.db.base_class import Base
@@ -13,6 +13,8 @@ class Area(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     estimated_time = Column(String, nullable=False)
+    incidence = Column(Boolean, nullable=False, default=False)
+    activity_level = Column(String, nullable=False, default='No')
 
     customer_id = Column(Integer, ForeignKey('customer.id'))
     customer = relationship('Customer', foreign_keys=[customer_id], back_populates='areas', passive_deletes=True)

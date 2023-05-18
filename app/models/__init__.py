@@ -2,3 +2,8 @@ from .user import User
 from .customer import Customer
 from .headquarter import Headquarter
 from .area import Area
+from .service import Service
+from .invoice import Invoice
+from .treatment import Treatment
+from .associations.service_user import ServiceUser
+from .associations.service_treatment import ServiceTreatment
