@@ -3,17 +3,13 @@ from typing import Generator
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from fastapi_jwt_auth import AuthJWT
-from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
-from app import crud, models, schemas
-from app.core import security
+from app import crud, models
 from app.core.config import settings
 from app.db.session import SessionLocal
 
-reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_V1_STR}/auth/login"
-)
+reusable_oauth2 = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
 
 
 def get_db() -> Generator:
@@ -25,9 +21,9 @@ def get_db() -> Generator:
 
 
 def get_current_user(
-        db: Session = Depends(get_db),
-        authorize: AuthJWT = Depends(),
-        token: OAuth2PasswordBearer = Depends(reusable_oauth2)
+    db: Session = Depends(get_db),
+    authorize: AuthJWT = Depends(),
+    token: OAuth2PasswordBearer = Depends(reusable_oauth2),
 ) -> models.User:
     authorize.jwt_required()
     try:
@@ -56,7 +52,5 @@ def get_current_active_superuser(
     current_user: models.User = Depends(get_current_user),
 ) -> models.User:
     if not crud.user.is_superuser(current_user):
-        raise HTTPException(
-            status_code=400, detail="The user doesn't have enough privileges"
-        )
+        raise HTTPException(status_code=400, detail="The user doesn't have enough privileges")
     return current_user

@@ -1,10 +1,7 @@
-
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Any, Union
 
-from fastapi import Depends
 from fastapi_jwt_auth import AuthJWT
-from jose import jwt
 from passlib.context import CryptContext
 
 from app.core.config import settings
@@ -24,7 +21,9 @@ def create_access_token(
     subject: Union[str, Any], expires_delta: timedelta = None, authorize: AuthJWT = None
 ) -> tuple[str, str]:
     access_token = authorize.create_access_token(subject=str(subject), algorithm=ALGORITHM, expires_time=expires_delta)
-    refresh_token = authorize.create_refresh_token(subject=str(subject), algorithm=ALGORITHM, expires_time=expires_delta)
+    refresh_token = authorize.create_refresh_token(
+        subject=str(subject), algorithm=ALGORITHM, expires_time=expires_delta
+    )
     return access_token, refresh_token
 
 

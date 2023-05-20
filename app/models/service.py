@@ -1,4 +1,5 @@
 from datetime import datetime, time
+
 from sqlalchemy import Column, Integer, String, DateTime, Time, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -13,22 +14,27 @@ class Service(Base):
     start_time = Column(Time, nullable=True)
     end_time = Column(Time, nullable=True)
     observations = Column(String, index=True, nullable=False)
-    customer_id = Column(Integer, ForeignKey('customer.id'))
-    headquarter_id = Column(Integer, ForeignKey('headquarter.id'))
-    invoice_id = Column(Integer, ForeignKey('invoice.id'))
+    customer_id = Column(Integer, ForeignKey("customer.id"))
+    headquarter_id = Column(Integer, ForeignKey("headquarter.id"))
+    invoice_id = Column(Integer, ForeignKey("invoice.id"))
 
-    users = relationship('ServiceUser', cascade='all, delete-orphan', back_populates='service')
+    customer = relationship("Customer", foreign_keys=[customer_id], back_populates="services", passive_deletes=True)
 
-    treatments = relationship('ServiceTreatment', cascade='all, delete-orphan', back_populates='service')
+    invoice = relationship("Invoice", foreign_keys=[invoice_id], back_populates="services", passive_deletes=True)
 
-    def __init__(self,
-                 service_type: str,
-                 expected_date: datetime,
-                 executed_date: datetime,
-                 start_time: time,
-                 end_time: time,
-                 observations: str,
-                 ):
+    users = relationship("ServiceUser", cascade="all, delete-orphan", back_populates="service")
+
+    treatments = relationship("ServiceTreatment", cascade="all, delete-orphan", back_populates="service")
+
+    def __init__(
+        self,
+        service_type: str,
+        expected_date: datetime,
+        executed_date: datetime,
+        start_time: time,
+        end_time: time,
+        observations: str,
+    ):
         self.service_type = service_type
         self.expected_date = expected_date
         self.executed_date = executed_date

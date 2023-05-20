@@ -1,9 +1,8 @@
-import secrets
 import os
-
+import secrets
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyHttpUrl, BaseSettings, EmailStr, HttpUrl, PostgresDsn, validator
+from pydantic import AnyHttpUrl, BaseSettings, EmailStr, PostgresDsn, validator
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))[:-3]
 
@@ -52,7 +51,7 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER_PASSWORD: str
 
     class Config:
-        env_file = os.path.join(BASE_DIR, '.env')
+        env_file = os.path.join(BASE_DIR, ".env")
         case_sensitive = True
 
 

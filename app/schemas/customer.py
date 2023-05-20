@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import Optional, List, Any
+
 from pydantic import BaseModel, EmailStr
 
 from .headquarter import HeadquarterCreate
@@ -31,4 +32,5 @@ class CustomerInDBBase(CustomerBase):
 
 
 class Customer(CustomerInDBBase):
+    services: Optional[List[Any]]
     pass

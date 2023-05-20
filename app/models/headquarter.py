@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -16,5 +17,5 @@ class Headquarter(Base):
     address = Column(String, nullable=False)
     phone = Column(String, nullable=False)
 
-    customer_id = Column(Integer, ForeignKey('customer.id'))
-    customer = relationship('Customer', back_populates='headquarters', foreign_keys=[customer_id], passive_deletes=True)
+    customer_id = Column(Integer, ForeignKey("customer.id"))
+    customer = relationship("Customer", back_populates="headquarters", foreign_keys=[customer_id], passive_deletes=True)

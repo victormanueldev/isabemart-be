@@ -1,9 +1,10 @@
-from typing import Optional, Any, List
 from datetime import datetime, time
+from typing import Optional, List, Any
+
 from pydantic import BaseModel
 
-from .user import UserService
-from .treatment import TreatmentService
+from .customer import Customer
+from .user_service import ServiceUser
 
 
 class ServiceBase(BaseModel):
@@ -36,6 +37,6 @@ class ServiceInDBBase(ServiceBase):
 
 
 class Service(ServiceInDBBase):
-    users: Optional[List[UserService]]
-    treatments: Optional[List[TreatmentService]]
-    pass
+    users: Optional[List[ServiceUser]]
+    customer: Customer
+    invoice: Any

@@ -16,4 +16,4 @@ class User(Base):
     is_superuser = Column(Boolean(), default=False)
     color = Column(String, unique=True)
 
-    services = relationship('ServiceUser', cascade='all, delete-orphan', back_populates='user')
+    services = relationship("ServiceUser", cascade="all, delete-orphan", back_populates="user")

@@ -1,19 +1,20 @@
 from typing import Optional, List
-from fastapi import APIRouter, Body, Depends, HTTPException
+
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.api import deps
 from app import crud, schemas, models
+from app.api import deps
 
 router = APIRouter()
 
 
 @router.post("/", response_model=schemas.Customer)
 def create_customer_with_headquarter(
-        *,
-        db: Session = Depends(deps.get_db),
-        customer_in: schemas.CustomerCreate,
-        current_user: models.User = Depends(deps.get_current_user),
+    *,
+    db: Session = Depends(deps.get_db),
+    customer_in: schemas.CustomerCreate,
+    current_user: models.User = Depends(deps.get_current_user),
 ) -> Optional[models.Customer]:
     """
     Create new customer with headquarter.
@@ -28,23 +29,23 @@ def create_customer_with_headquarter(
     return customer
 
 
-@router.get('/', response_model=List[schemas.Customer])
+@router.get("/", response_model=List[schemas.Customer])
 def get_customers_all(
-        *,
-        db: Session = Depends(deps.get_db),
-        current_user: models.User = Depends(deps.get_current_user),
+    *,
+    db: Session = Depends(deps.get_db),
+    current_user: models.User = Depends(deps.get_current_user),
 ) -> List[models.Customer]:
     customers = crud.customer.get_multi(db)
     return customers
 
 
-@router.patch('/{customer_id}', response_model=schemas.Customer)
+@router.patch("/{customer_id}", response_model=schemas.Customer)
 def update_customer(
-        *,
-        db: Session = Depends(deps.get_db),
-        customer_id: int,
-        customer_in: schemas.CustomerUpdate,
-        curren_user: models.User = Depends(deps.get_current_user)
+    *,
+    db: Session = Depends(deps.get_db),
+    customer_id: int,
+    customer_in: schemas.CustomerUpdate,
+    curren_user: models.User = Depends(deps.get_current_user),
 ) -> models.Customer:
     customer = crud.customer.get(db, customer_id)
     if not customer:
@@ -53,12 +54,9 @@ def update_customer(
     return customer
 
 
-@router.delete('/{customer_id}', response_model=bool)
+@router.delete("/{customer_id}", response_model=bool)
 def delete_customer(
-        *,
-        db: Session = Depends(deps.get_db),
-        customer_id: int,
-        curren_user: models.User = Depends(deps.get_current_user)
+    *, db: Session = Depends(deps.get_db), customer_id: int, curren_user: models.User = Depends(deps.get_current_user)
 ) -> bool:
     customer = crud.customer.get(db, customer_id)
     if not customer:

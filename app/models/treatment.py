@@ -10,4 +10,4 @@ class Treatment(Base):
     cost = Column(Integer, nullable=False)
     frequency = Column(String, nullable=False)
 
-    services = relationship('ServiceTreatment', cascade='all, delete-orphan', back_populates='treatment')
+    services = relationship("ServiceTreatment", cascade="all, delete-orphan", back_populates="treatment")

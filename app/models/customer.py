@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -18,6 +19,8 @@ class Customer(Base):
     address = Column(String, nullable=False)
     phone = Column(String, nullable=False)
 
-    headquarters = relationship('Headquarter', back_populates='customer', cascade="all, delete-orphan")
+    headquarters = relationship("Headquarter", back_populates="customer", cascade="all, delete-orphan")
 
-    areas = relationship('Area', back_populates='customer', cascade="all, delete-orphan")
+    areas = relationship("Area", back_populates="customer", cascade="all, delete-orphan")
+
+    services = relationship("Service", back_populates="customer")
