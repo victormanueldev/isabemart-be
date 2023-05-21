@@ -22,3 +22,5 @@ class Area(Base):
 
     headquarter_id = Column(Integer, ForeignKey("headquarter.id"))
     headquarter = relationship("Headquarter", foreign_keys=[headquarter_id], passive_deletes=True)
+
+    control_points = relationship("ControlPoint", back_populates="area", passive_deletes=True)

@@ -3,7 +3,6 @@ from typing import Optional, List, Any
 
 from pydantic import BaseModel
 
-from .customer import Customer
 from .user_service import ServiceUser
 
 
@@ -38,5 +37,5 @@ class ServiceInDBBase(ServiceBase):
 
 class Service(ServiceInDBBase):
     users: Optional[List[ServiceUser]]
-    customer: Customer
+    customer: Any
     invoice: Any

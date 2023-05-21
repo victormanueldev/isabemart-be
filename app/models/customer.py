@@ -24,3 +24,9 @@ class Customer(Base):
     areas = relationship("Area", back_populates="customer", cascade="all, delete-orphan")
 
     services = relationship("Service", back_populates="customer")
+
+    control_points = relationship("ControlPoint", back_populates="customer", cascade="all, delete-orphan")
+
+    sanity_plans = relationship("SanityPlan", back_populates="customer", cascade="all, delete-orphan")
+
+    documents = relationship("Document", back_populates="customer", cascade="all, delete-orphan")

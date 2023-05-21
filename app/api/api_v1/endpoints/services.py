@@ -38,8 +38,36 @@ def save_service(
         raise HTTPException(status_code=400, detail="Selected user is not a technician")
     treatments = crud.treatments.get_by_ids(db=db, ids=service_in.treatments)
     if len(treatments) == 0:
-        raise HTTPException(status_code=400, detail="Treatments not found")
+        raise HTTPException(status_code=404, detail="Treatments not found")
     service = crud.service.create_service(
         db=db, treatments_db=treatments, customer_db=customer, user_db=user_technician, obj_in=service_in
     )
     return service
+
+
+@router.patch("/{service_id}", response_model=schemas.Service)
+def update_service(
+    *,
+    db: Session = Depends(deps.get_db),
+    service_id: int,
+    service_in: schemas.ServiceUpdate,
+    current_user: models.User = Depends(deps.get_current_user),
+) -> Optional[models.Service]:
+    service = crud.service.get(db, id=service_id)
+    if not service:
+        raise HTTPException(status_code=404, detail="Treatments not found")
+    service_updated = crud.service.update(db, db_obj=service, obj_in=service_in)
+    return service_updated
+
+
+@router.delete("/{service_id}", response_model=bool)
+def delete_service(
+    *,
+    db: Session = Depends(deps.get_db),
+    service_id: int,
+    current_user: models.User = Depends(deps.get_current_user),
+) -> bool:
+    service = crud.service.get(db, id=service_id)
+    if not service:
+        raise HTTPException(status_code=404, detail="Service not found")
+    return crud.service.remove(db, id=service_id)

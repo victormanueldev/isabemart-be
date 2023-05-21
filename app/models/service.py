@@ -13,7 +13,7 @@ class Service(Base):
     executed_date = Column(DateTime, nullable=False)
     start_time = Column(Time, nullable=True)
     end_time = Column(Time, nullable=True)
-    observations = Column(String, index=True, nullable=False)
+    observations = Column(String, nullable=True)
     customer_id = Column(Integer, ForeignKey("customer.id"))
     headquarter_id = Column(Integer, ForeignKey("headquarter.id"))
     invoice_id = Column(Integer, ForeignKey("invoice.id"))

@@ -39,6 +39,19 @@ def get_customers_all(
     return customers
 
 
+@router.get("/{customer_id}", response_model=schemas.Customer)
+def get_by_id(
+    *,
+    db: Session = Depends(deps.get_db),
+    customer_id: int,
+    current_user: models.User = Depends(deps.get_current_user),
+) -> models.Customer:
+    customer = crud.customer.get(db, customer_id)
+    if not customer:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    return customer
+
+
 @router.patch("/{customer_id}", response_model=schemas.Customer)
 def update_customer(
     *,

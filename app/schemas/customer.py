@@ -6,13 +6,13 @@ from .headquarter import HeadquarterCreate
 
 
 class CustomerBase(BaseModel):
-    document_id: str
-    customer_type: str
+    document_id: Optional[str]
+    customer_type: Optional[str]
     commercial_name: Optional[str] = None
-    email: EmailStr
-    city: str
-    address: str
-    phone: str
+    email: Optional[EmailStr]
+    city: Optional[str]
+    address: Optional[str]
+    phone: Optional[str]
 
 
 class CustomerCreate(CustomerBase):
@@ -33,4 +33,7 @@ class CustomerInDBBase(CustomerBase):
 
 class Customer(CustomerInDBBase):
     services: Optional[List[Any]]
+    control_points: Optional[List[Any]]
+    sanity_plans: Optional[List[Any]]
+    documents: Optional[List[Any]]
     pass
