@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from pydantic.utils import GetterDict
 
 
-class UserServiceGetter(GetterDict):
+class TreatmentServiceGetter(GetterDict):
     def get(self, key: str, default: Any = None) -> Any:
         if key in {
             "id",
@@ -21,10 +21,10 @@ class UserServiceGetter(GetterDict):
         }:
             return getattr(self._obj.service, key)
         else:
-            return super(UserServiceGetter, self).get(key, default)
+            return super(TreatmentServiceGetter, self).get(key, default)
 
 
-class UserService(BaseModel):
+class TreatmentService(BaseModel):
     id: Optional[str]
     service_type: Optional[str]
     expected_date: Optional[datetime]
@@ -38,39 +38,31 @@ class UserService(BaseModel):
 
     class Config:
         orm_mode = True
-        getter_dict = UserServiceGetter
+        getter_dict = TreatmentServiceGetter
 
 
-class ServiceUserGetter(GetterDict):
+class ServiceTreatmentGetter(GetterDict):
     def get(self, key: str, default: Any = None) -> Any:
         if key in {
             "id",
-            "document_id",
-            "full_name",
-            "email",
-            "is_active",
-            "is_technician",
-            "is_customer",
-            "is_superuser",
-            "color",
+            "name",
+            "cost",
+            "frequency",
         }:
-            return getattr(self._obj.user, key)
-
+            return getattr(self._obj.treatment, key)
         else:
-            return super(ServiceUserGetter, self).get(key, default)
+            return super(ServiceTreatmentGetter, self).get(key, default)
 
 
-class ServiceUser(BaseModel):
-    id: str
-    document_id: Optional[str]
-    full_name: str
-    email: str
-    is_active: bool
-    is_technician: bool
-    is_customer: bool
-    is_superuser: bool
-    color: Optional[str]
+class ServiceTreatment(BaseModel):
+    id: Optional[int]
+    name: Optional[str]
+    cost: Optional[int]
+    frequency: Optional[str]
+    status: Optional[str]
+    observations: Optional[str]
 
     class Config:
         orm_mode = True
-        getter_dict = ServiceUserGetter
+        getter_dict = ServiceTreatmentGetter
+

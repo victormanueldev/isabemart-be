@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Any
 
 from pydantic import BaseModel
 
@@ -8,6 +8,8 @@ class DocumentBase(BaseModel):
     document_type: Optional[str]
     upload_datetime: Optional[datetime]
     status: Optional[str]
+    url: Optional[str]
+    name: Optional[str]
     customer_id: Optional[int]
 
 
@@ -27,4 +29,5 @@ class DocumentInDBBase(DocumentBase):
 
 
 class Document(DocumentInDBBase):
+    customer: Optional[Any]
     pass

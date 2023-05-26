@@ -10,8 +10,8 @@ class ServiceTreatment(Base):
     treatment_id = Column(Integer, ForeignKey("treatment.id"), primary_key=True)
     status = Column(String, nullable=False, default="No iniciado")
     observations = Column(String, nullable=True)
-    service = relationship("Service", back_populates="treatments")
-    treatment = relationship("Treatment", back_populates="services")
+    service = relationship("Service", back_populates="treatments", passive_deletes=True)
+    treatment = relationship("Treatment", back_populates="services", passive_deletes=True)
 
     def __init__(self, treatment: Treatment):
         self.treatment = treatment

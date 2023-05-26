@@ -4,6 +4,7 @@ from typing import Optional, List, Any
 from pydantic import BaseModel
 
 from .user_service import ServiceUser
+from .treatment_service import ServiceTreatment
 
 
 class ServiceBase(BaseModel):
@@ -15,6 +16,7 @@ class ServiceBase(BaseModel):
     executed_date: Optional[datetime]
     start_time: Optional[time]
     end_time: Optional[time]
+    status: Optional[str]
     observations: Optional[str]
 
 
@@ -25,6 +27,8 @@ class ServiceCreate(ServiceBase):
 
 
 class ServiceUpdate(ServiceBase):
+    treatments: Optional[List[int]] = []
+    user_id: Optional[int]
     pass
 
 
@@ -37,5 +41,7 @@ class ServiceInDBBase(ServiceBase):
 
 class Service(ServiceInDBBase):
     users: Optional[List[ServiceUser]]
+    treatments: Optional[List[ServiceTreatment]]
     customer: Any
     invoice: Any
+    headquarter: Optional[Any]

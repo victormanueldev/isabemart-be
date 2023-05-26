@@ -9,6 +9,8 @@ class Document(Base):
     document_type = Column(String, nullable=False, default="Certificacion")
     upload_datetime = Column(DateTime, nullable=False)
     status = Column(String, nullable=False, default="Vigente")
+    name = Column(String, nullable=True)
+    url = Column(String, nullable=True)
 
     customer_id = Column(Integer, ForeignKey("customer.id"))
     customer = relationship("Customer", back_populates="documents", passive_deletes=True)

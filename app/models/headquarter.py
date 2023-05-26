@@ -21,3 +21,5 @@ class Headquarter(Base):
     customer = relationship("Customer", back_populates="headquarters", foreign_keys=[customer_id], passive_deletes=True)
 
     control_points = relationship("ControlPoint", back_populates="headquarter", passive_deletes=True)
+
+    services = relationship("Service", back_populates="headquarter", passive_deletes=True)

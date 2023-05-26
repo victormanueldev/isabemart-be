@@ -11,3 +11,4 @@ from .user import User, UserCreate, UserInDB, UserUpdate, UserService
 from .user_service import UserService, ServiceUser
 from .sanity_plan import SanityPlan, SanityPlanCreate, SanityPlanUpdate
 from .document import Document, DocumentCreate, DocumentUpdate
+from .treatment_service import TreatmentService, ServiceTreatment

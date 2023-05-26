@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Any, Union, Dict
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
@@ -15,14 +15,19 @@ from app.schemas.service import ServiceCreate, ServiceUpdate
 
 
 class CRUDService(CRUDBase[Service, ServiceCreate, ServiceUpdate]):
+    def get_multi_paginated(
+            self, db: Session, *, skip: int = 0, limit: int = 100, status: str
+    ) -> List[Service]:
+        return db.query(self.model).filter(self.model.status == status).offset(skip).limit(limit).all()
+
     def create_service(
-        self,
-        db: Session,
-        treatments_db: List[Treatment],
-        customer_db: Customer,
-        user_db: User,
-        *,
-        obj_in: ServiceCreate,
+            self,
+            db: Session,
+            treatments_db: List[Treatment],
+            customer_db: Customer,
+            user_db: User,
+            *,
+            obj_in: ServiceCreate,
     ) -> Service:
         obj_data = jsonable_encoder(obj_in)
         service_db = self.model(
@@ -43,10 +48,33 @@ class CRUDService(CRUDBase[Service, ServiceCreate, ServiceUpdate]):
         service_db.invoice_id = invoice_db.id
         service_db.users.append(ServiceUser(user_db))
         service_db.customer_id = customer_db.id
+        if len(customer_db.headquarters) > 0:
+            service_db.headquarter_id = customer_db.headquarters[0].id
         db.add(service_db)
         db.commit()
         db.refresh(service_db)
         return service_db
+
+    def update_service(self, db: Session, *, db_obj: Service, obj_in: Union[ServiceUpdate, Dict[str, Any]],
+                       treatments: List[Treatment], user: User):
+        obj_data = jsonable_encoder(db_obj)
+        if isinstance(obj_in, dict):
+            update_data = obj_in
+        else:
+            update_data = obj_in.dict(exclude_unset=True)
+        for field in obj_data:
+            if field in update_data:
+                setattr(db_obj, field, update_data[field])
+        db_treatments = []
+        for treatment in treatments:
+            db_treatments.append(ServiceTreatment(treatment))
+        db_obj.treatments = db_treatments
+        db_user = ServiceUser(user)
+        db_obj.user = db_user
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
 
 
 service = CRUDService(Service)

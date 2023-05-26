@@ -1,9 +1,6 @@
-from typing import Optional
+from typing import Optional, Any
 
 from pydantic import BaseModel
-
-from .customer import Customer
-from .headquarter import Headquarter
 
 
 class AreaBase(BaseModel):
@@ -11,6 +8,8 @@ class AreaBase(BaseModel):
     headquarter_id: Optional[int]
     name: Optional[str]
     estimated_time: Optional[str]
+    incidence: Optional[bool]
+    activity_level: Optional[str]
 
 
 class AreaCreate(AreaBase):
@@ -29,6 +28,6 @@ class AreaInDBBase(AreaBase):
 
 
 class Area(AreaInDBBase):
-    customer: Optional[Customer] = None
-    headquarter: Optional[Headquarter] = None
+    customer: Optional[Any] = None
+    headquarter: Optional[Any] = None
     pass

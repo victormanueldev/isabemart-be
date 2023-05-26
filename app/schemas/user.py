@@ -7,13 +7,13 @@ from .user_service import UserService
 
 # Shared properties
 class UserBase(BaseModel):
-    email: Optional[EmailStr] = None
+    email: Optional[EmailStr]
     is_active: Optional[bool] = True
-    is_superuser: bool = False
-    full_name: Optional[str] = None
-    is_technician: bool = False
-    is_customer: bool = False
-    color: Optional[str] = None
+    is_superuser: bool
+    full_name: Optional[str]
+    is_technician: bool
+    is_customer: bool
+    color: Optional[str]
 
 
 # Properties to receive via API on creation

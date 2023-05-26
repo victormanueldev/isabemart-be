@@ -13,13 +13,16 @@ class CRUDCustomer(CRUDBase[Customer, CustomerCreate, CustomerUpdate]):
     def get_by_document_id(self, db: Session, *, document_id: str) -> Optional[Customer]:
         return db.query(self.model).filter(Customer.document_id == document_id).first()
 
-    def get_with_headquarter(self, db: Session, *, customer_id: int, headquarter_id: int) -> Optional[Customer]:
-        return (
-            db.query(self.model)
-            .join(Headquarter)
-            .filter(Customer.id == customer_id, Headquarter.id == headquarter_id)
-            .first()
-        )
+    def get_with_headquarter(self, db: Session, *, customer_id: int, headquarter_id: int = None) -> Optional[Customer]:
+        if not headquarter_id:
+            return db.query(self.model).filter(Customer.id == customer_id).first()
+        else:
+            return (
+                db.query(self.model)
+                .join(Headquarter)
+                .filter(Customer.id == customer_id, Headquarter.id == headquarter_id)
+                .first()
+            )
 
     def create_with_headquarter(self, db: Session, *, obj_in: CustomerCreate) -> Customer:
         obj_customer = jsonable_encoder(obj_in)
